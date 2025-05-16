@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    parameters {
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'Test', type: 'PT_Branch'
+    }
+    stages {
+        stage('Deploy to Dev Env') {
+            when {
+                expression { params.BRANCH == 'dev' }
+            }
+            steps {
+                dir('/home/ansibleadm/jenkins/workspace/FN-DEV-Ansible') {
+                    sh 'ansible-playbook env-configs/dev/playbooks/ansible-dev-deploy.yml'
+                }
+            }
+        }    
+        stage('Deploy to QA Env') {
+            when {
+                expression { params.BRANCH == 'qa' }
+            }
+            steps {
+                sh "echo you r in qa"
+            }
+        }
+    }
+}
